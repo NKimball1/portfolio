@@ -123,4 +123,6 @@ assets after a deploy.
 
   If you'd rather ship Word's own formatting, export a PDF over that same path and ignore the
   script.
-- Phone number is deliberately not on the site; public numbers attract spam. It's on the résumé.
+- The served PDF has the phone number stripped, because the site publishes it and scrapers read
+  it. The source `.docx` keeps the number for résumés sent directly to employers. Pass
+  `--keep-phone` to render it anyway.

@@ -138,7 +138,24 @@ def is_job_header(line):
     return "\t" in line
 
 
-def build(docx_path, out_path):
+# Any run of digits/() /-/. that adds up to 10+ digits — i.e. a phone number.
+PHONE = re.compile(r"\(?\d[\d\s().+-]{8,}\d")
+
+
+def strip_phone(contact_line):
+    """
+    Drop the phone number from the contact line.
+
+    The site serves this PDF publicly, so the number would be scraped. The
+    .docx keeps it for résumés sent directly to employers; only the web copy
+    loses it. Pass --keep-phone to render it anyway.
+    """
+    parts = [p.strip() for p in contact_line.split("❖")]
+    kept = [p for p in parts if not (PHONE.search(p) and len(re.sub(r"\D", "", p)) >= 10)]
+    return "  ❖  ".join(kept)
+
+
+def build(docx_path, out_path, keep_phone=False):
     header, sections = parse(read_docx_lines(docx_path))
     st = styles()
 
@@ -162,8 +179,10 @@ def build(docx_path, out_path):
     if len(header) > 1:
         flow.append(Paragraph(header[1].upper(), st["role"]))
     if len(header) > 2:
+        contact = strip_phone(header[2]) if not keep_phone else header[2]
         # The docx separates contact fields with ❖; a middot reads better in print.
-        contact = header[2].replace("❖", "·")
+        contact = contact.replace("❖", "·")
+        print(f"  contact line: {contact}")
         flow.append(Paragraph(contact, st["contact"]))
     flow.append(Rule(frame_width, color=INK, thickness=1.1))
 
@@ -200,7 +219,11 @@ def build(docx_path, out_path):
 
 
 if __name__ == "__main__":
-    src = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_DOCX
+    args = [a for a in sys.argv[1:] if a != "--keep-phone"]
+    keep_phone = "--keep-phone" in sys.argv
+
+    src = Path(args[0]) if args else DEFAULT_DOCX
     if not src.exists():
         sys.exit(f"resume docx not found: {src}")
-    print(f"built {build(src, OUT)}")
+
+    print(f"built {build(src, OUT, keep_phone=keep_phone)}")
