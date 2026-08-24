@@ -1,0 +1,6 @@
+# Copy to deploy.config and fill in after the one-time AWS setup.
+# deploy.config is git-ignored — these aren't secrets, but they're account-specific.
+
+SITE_DOMAIN=nicholaskimball.com
+S3_BUCKET=nicholaskimball-site
+CLOUDFRONT_DISTRIBUTION_ID=E1234567890ABC

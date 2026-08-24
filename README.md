@@ -45,32 +45,71 @@ work identically.
 ## Deploying to AWS
 
 The build output is plain static files, so this is S3 + CloudFront — no server, no runtime.
+Cost lands around $1.50/month: mostly the Route 53 hosted zone, plus about $14/year for the
+domain. Traffic at portfolio volume is inside the free tier.
 
-**One-time setup**
+### One-time setup
 
-1. **S3 bucket** — create one (any name; it isn't public). Leave "Block all public access" ON;
-   CloudFront reaches it through an Origin Access Control, not the public internet.
-2. **CloudFront distribution** — origin = the bucket, with OAC enabled. Set the
-   *Default root object* to `index.html`. Redirect HTTP to HTTPS.
-3. **Certificate** — request one in ACM **in us-east-1** (CloudFront only reads certs from that
-   region), for `nicholaskimball.com` and `www.nicholaskimball.com`. Validate via DNS.
-4. **DNS** — point an A/ALIAS record at the CloudFront distribution.
+Do these in order — later steps depend on IDs the earlier ones produce.
 
-**Every deploy**
+**1. Register the domain.** Route 53 console → *Registered domains* → *Register domains*. Buy it
+here rather than via the CLI so you see the price and confirm the charge yourself. Registration
+takes a few minutes to an hour, and it creates the hosted zone for you.
+
+**2. Create an IAM user for deploys.** IAM console → *Users* → create one (e.g. `portfolio-deploy`)
+with programmatic access. Attach `AmazonS3FullAccess` and `CloudFrontFullAccess` — tighten later if
+you care to. Save the access key and secret; you'll only see the secret once.
+
+**3. Configure the CLI.** Run this yourself — never paste your keys into a chat:
 
 ```bash
-corepack pnpm@latest build && aws s3 sync dist/ s3://YOUR_BUCKET --delete
+aws configure
 ```
+
+**4. Create the bucket.** Any name; it stays private. Leave *Block all public access* ON —
+CloudFront reaches it through an Origin Access Control, not the open internet.
 
 ```bash
-aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths "/*"
+aws s3api create-bucket --bucket YOUR_BUCKET --region us-east-1
 ```
 
-The invalidation matters — without it CloudFront keeps serving the previous `index.html` until
-the cache expires. Vite fingerprints the JS and CSS filenames, so only `index.html` is really at
-risk of going stale.
+**5. Request the certificate — in us-east-1.** CloudFront only reads certificates from that
+region, no matter where everything else lives. In ACM, request a public cert covering both
+`yourdomain.com` and `www.yourdomain.com`, choose DNS validation, and click *Create records in
+Route 53*. Validation takes a few minutes.
 
-Cost sits around $0.50–1.00/month at portfolio traffic levels, most of it the hosted zone.
+**6. Create the CloudFront distribution.** Origin = your S3 bucket, with *Origin access control*
+enabled (create one, then use the button ACM offers to copy the generated bucket policy back to
+S3 — that policy is what lets CloudFront read a private bucket). Then set:
+
+- *Default root object*: `index.html`
+- *Viewer protocol policy*: Redirect HTTP to HTTPS
+- *Alternate domain names (CNAMEs)*: your domain and the `www` variant
+- *Custom SSL certificate*: the one from step 5
+
+The distribution takes 5–15 minutes to deploy.
+
+**7. Point DNS at it.** Route 53 → your hosted zone → create an **A record**, toggle *Alias* on,
+and target the CloudFront distribution. Repeat for `www`.
+
+**8. Fill in your config.**
+
+```bash
+cp deploy.config.example deploy.config
+```
+
+Put your bucket name, distribution ID, and domain in it. It's git-ignored.
+
+### Every deploy after that
+
+```bash
+./scripts/deploy.sh
+```
+
+That builds, uploads in two passes, and invalidates the CDN cache. The two passes matter: Vite
+fingerprints the JS and CSS filenames so those are cached for a year, while `index.html` keeps a
+stable name and is marked never-cache — otherwise visitors keep loading the previous build's
+assets after a deploy.
 
 ## Notes
 
