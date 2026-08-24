@@ -7,33 +7,41 @@ export const profile = {
   name: 'Nicholas Kimball',
   role: 'Forward Deployed Engineer',
   location: 'Madison, WI',
-  availability: 'Open to relocation & travel',
+  availability: 'Open to remote & relocation',
   email: 'nickkimball12@gmail.com',
   github: 'https://github.com/NKimball1',
-  linkedin: 'https://www.linkedin.com/in/nicholas-kimball',
+  linkedin: 'https://www.linkedin.com/in/nicholas-kimball-819194150/',
   resume: '/Nicholas-Kimball-Resume.pdf',
   lede:
-    'I sit with customers, work out what they actually need, and build it end to end — discovery, architecture, deployment, cutover, and the support that comes after. Every engagement lands in a different stack, so ramping fast is the job.',
+    'I take end-to-end ownership of technical projects — requirements and prototyping through production and support. I build and deploy LLM-powered systems myself, and I bring deep enterprise-integration experience across ERPs, TMS, APIs, and messy legacy data.',
 }
 
 export const stats = [
   { value: '~1M', label: 'API requests/day at peak on a system I architected' },
-  { value: '75', label: 'accounts supported across four industries' },
-  { value: '92%', label: 'of tickets resolved without engineering escalation' },
+  { value: '75+', label: 'customer environments owned, no two alike' },
+  { value: '92%', label: 'of issues resolved without engineering escalation' },
   { value: '45%', label: 'of accounts returned for repeat engagements' },
 ]
 
 export const work = [
   {
-    title: 'cycling-agentic-flow',
+    title: 'Agentic LLM Coaching Workflow',
     org: 'Personal',
     year: '2026',
-    kind: 'Open source',
+    kind: 'Deployed · Open source',
     summary:
-      'An agentic training coach running unattended in production. It pulls each ride from Strava, computes multi-sport training load, analyzes it against my plan with Claude, and emails back a coaching brief — no manual steps.',
+      'An agentic workflow running unattended in production. It ingests activity data from the Strava API, analyzes it against a structured training plan using the Anthropic API with tool calling, and delivers automated coaching reports — no manual steps, on a cron on AWS.',
     detail:
-      'Deliberately restrained agent design: deterministic gathering stays in plain Python, and the model only gets a tool where one genuinely earns its place — a typed, gateable write. It also ships an eval harness (frozen fixtures scored by an LLM judge against a rubric, logged to SQLite) so prompt changes get measured instead of guessed at. Live on AWS on a five-minute cron since August 2026.',
-    tags: ['Python', 'Claude API', 'Tool use', 'Evals', 'AWS'],
+      'Two decisions carry the design. First, deterministic computation stays out of the model: all the date math and load calculation happens in Python and arrives as stated fact, which eliminated a whole class of confident-but-wrong LLM output. Second, the model gets exactly one tool — a typed, gateable write — because a tool only earns its place for selective retrieval or a real side effect, not for dressing up work ordinary code already does. On top of that sits an eval layer: frozen fixtures scored by an LLM judge against a rubric, prompt versioning, and a SQLite run log, so prompt and model changes are measurable rather than vibes. I also benchmarked model quality against token cost and latency with a fixed judge, keeping eval noise and judge-independence in view. Provider and data-source seams mean swapping the LLM vendor or the input source is one adapter and zero business-logic changes.',
+    tags: [
+      'Python',
+      'Anthropic API',
+      'Tool use',
+      'Evals & LLM-as-judge',
+      'OAuth',
+      'AWS',
+      'SQLite',
+    ],
     href: 'https://github.com/NKimball1/cycling-agentic-flow',
     linkLabel: 'View on GitHub',
     featured: true,
@@ -44,7 +52,7 @@ export const work = [
     year: '2024 — 2026',
     kind: 'Professional',
     summary:
-      'Architected the backend for a shipping-rate engine serving roughly a million API requests a day at peak, returning rates from up to six carriers in under two seconds.',
+      'Architected a production integration serving roughly a million API requests a day at peak, returning rates from up to six carriers in under two seconds.',
     detail:
       'The hard part was never the carrier APIs — it was holding the latency budget when any single carrier could be slow or down. Multi-server, multi-threaded fan-out with per-carrier timeouts and graceful degradation, so one bad upstream never holds the whole response hostage.',
     tags: ['System design', 'Concurrency', 'REST/SOAP', 'Performance'],
@@ -55,21 +63,10 @@ export const work = [
     year: '2025',
     kind: 'Professional',
     summary:
-      'Delivered an end-to-end shipping integration across 12 distribution centers for an enterprise customer moving millions of shipments a year.',
+      'Delivered an end-to-end integration across 12 distribution centers for an enterprise customer moving millions of shipments a year.',
     detail:
-      'A year-long engagement start to finish: discovery and requirements, statement of work, build, site-by-site deployment, cutover from the legacy system, and support through go-live. I was the technical throughline across the customer, their WMS vendors, and their outside consultants.',
-    tags: ['Discovery', 'Cutover', 'WMS', 'Stakeholder management'],
-  },
-  {
-    title: 'GarminIQ',
-    org: 'Personal',
-    year: '2026',
-    kind: 'In progress',
-    summary:
-      'An on-device Connect IQ app that writes a real morning brief from your own watch data — a better Garmin Morning Report, built so anyone can run it, not just me.',
-    detail:
-      'On-device was chosen by elimination, and that constraint is the entire design. Every server-side path to Garmin data either wanted each user’s account password, was deprecated, or required applying as a legal entity — none of which survive the requirement that other people can actually use it. So the app calls the model straight from the watch, bring-your-own-key. Monkey C, targeting the fēnix 8 and Forerunner 965.',
-    tags: ['Monkey C', 'Connect IQ', 'LLM', 'Constraint-driven design'],
+      'A year-long engagement start to finish: requirements and scoping, prototyping, building against their ERP, WMS, and carrier systems, site-by-site deployment, cutover from the legacy system, and production support after go-live. I was the technical throughline across the customer, their WMS vendors, and their outside consultants.',
+    tags: ['Discovery', 'ERP / WMS', 'Cutover', 'Stakeholder management'],
   },
   {
     title: 'MariaDB Replication Proof of Concept',
@@ -88,10 +85,10 @@ export const work = [
     year: '2025',
     kind: 'Professional',
     summary:
-      'Ramped onto a sister company’s unfamiliar product, migrated five legacy VBScript integrations to JavaScript — all under budget — then trained their engineers on our platform.',
+      'Ramped onto a sister company’s unfamiliar product and shipped five legacy integration migrations, all under budget, then trained their engineers on our platform.',
     detail:
       'Dropped into a codebase and a product I had never seen, with their team as the eventual owners. Shipping the migrations was half the job; leaving the team able to maintain the result was the other half.',
-    tags: ['VBScript', 'JavaScript', 'Legacy migration', 'Enablement'],
+    tags: ['Legacy migration', 'JavaScript', 'Enablement'],
   },
 ]
 
@@ -102,10 +99,10 @@ export const experience = [
     note: 'Enterprise shipping & logistics software · Remote',
     period: 'Apr 2024 — Present',
     points: [
-      'Own the full lifecycle for enterprise customers: discovery, scoping and statements of work, build, deployment, cutover, and long-term support.',
-      'Resolved 150+ support and integration tickets across 75 accounts, handling 92% without escalating to engineering by reading product source to separate user error from bugs from real product gaps.',
-      'Delivered four major end-to-end integrations spanning three-month to year-long engagements across healthcare, financial, retail, and automotive customers.',
-      'Use AI and agentic development tools daily — source analysis, proofs of concept, customer-facing documentation, architecture review, diagrams, and feasibility research.',
+      'Lead end-to-end delivery of enterprise integrations: requirements and scoping with customers, prototyping, building against their ERP, TMS/WMS, and carrier systems, deployment, cutover, and production support.',
+      'Own the customer relationship and the code across 75+ environments, no two alike; resolve 92% of issues without escalating to engineering by tracing source to root cause.',
+      'Architected a production integration handling ~1M API requests/day at peak — multi-server, multi-threaded, sub-two-second results across up to six carriers.',
+      'Partner with sales and stakeholders to gather requirements, present system designs, and communicate progress and risk to technical and non-technical audiences; codify reusable delivery playbooks.',
     ],
   },
   {
@@ -115,7 +112,6 @@ export const experience = [
     period: 'Jan 2021 — Apr 2023',
     points: [
       'Built automated regression suites for a real-time data-ingestion pipeline, saving 50+ hours of manual coverage biweekly.',
-      'Automated a 10+ hour source-team onboarding process with Java, Cucumber, and Bash.',
       'Delivered 15+ releases with zero critical production issues.',
     ],
   },
@@ -130,52 +126,43 @@ export const experience = [
 
 export const skills = [
   {
+    group: 'LLM & Agentic',
+    items: [
+      'Building & deploying LLM systems',
+      'Agentic design with tool use',
+      'LLM-as-judge evaluation',
+      'Model benchmarking',
+      'Prompt versioning',
+      'Deterministic-vs-judgment separation',
+      'Anthropic API',
+    ],
+  },
+  {
     group: 'Building & Integration',
     items: [
       'End-to-end delivery',
-      'Discovery & requirements',
+      'Enterprise integrations (ERP, TMS)',
+      'REST / SOAP APIs',
+      'OAuth',
+      'Data pipelines',
       'System design',
-      'REST / SOAP integration',
-      'Data mapping',
-      'Legacy migration',
-      'Cutover',
-      'POCs & prototypes',
+      'Production support',
     ],
   },
   {
     group: 'Languages & Data',
-    items: ['Java', 'C#', 'JavaScript', 'Python', 'SQL', 'Bash', 'VBScript', 'XML', 'JSON'],
-  },
-  {
-    group: 'AI & Agentic',
-    items: [
-      'Claude API & tool use',
-      'Agent design',
-      'Eval harnesses',
-      'Prompt iteration',
-      'Source-code analysis',
-      'Agentic dev tooling, daily',
-    ],
+    items: ['Python', 'Java', 'C#', 'JavaScript', 'SQL', 'SQLite', 'Bash', 'XML', 'JSON'],
   },
   {
     group: 'Platforms',
-    items: [
-      'AWS',
-      'Git',
-      'Spring',
-      'Maven',
-      'MariaDB / SQL Server',
-      'EDI & carrier exchange',
-      'Unix / Linux',
-      'Jira · Confluence · Zendesk',
-    ],
+    items: ['AWS', 'Git', 'Spring', 'Maven', 'MariaDB / SQL Server', 'Jira', 'Confluence'],
   },
 ]
 
 export const about = [
-  'I’m a customer-facing engineer. The work starts in a room with people describing a problem in their own words, and ends with something running in their environment that I am still on the hook for months later.',
+  'I’m a customer-facing engineer. The work starts in a room with people describing a problem in their own words, and ends with something running in their environment that I’m still on the hook for months later.',
   'In practice I wear whatever role the engagement needs — development, architecture, DevOps, support, training. The judgment call I make most often isn’t how to build something, but whether to configure, automate, build, or simplify the requirement out of existence.',
-  'Outside client work I build things to keep my own hands in it. Lately that means agentic systems: a training coach that has been running unattended in production since August, and an on-device LLM brief for a Garmin watch. Both exist because I wanted to find out where agents genuinely help and where they’re just ceremony.',
+  'The same instinct shows up in how I use LLMs. I build and deploy them myself rather than talking about them abstractly, and most of what I’ve learned is about restraint: keep deterministic work in ordinary code, give the model a tool only when one genuinely earns its place, and measure prompt changes instead of trusting how they feel.',
 ]
 
 export const navLinks = [

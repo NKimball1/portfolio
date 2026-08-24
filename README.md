@@ -74,7 +74,14 @@ Cost sits around $0.50–1.00/month at portfolio traffic levels, most of it the 
 
 ## Notes
 
-- `public/Nicholas-Kimball-Resume.pdf` is currently the Feb 2025 *Integration Engineer* résumé.
-  Replace it with a PDF export of the Forward Deployed Engineer version, keeping the filename.
-- `profile.linkedin` in `src/data/content.js` is a guessed URL — confirm the real one.
+- `public/Nicholas-Kimball-Resume.pdf` is generated from the source `.docx` by
+  `scripts/build_resume_pdf.py` — Word and LibreOffice aren't installed on this machine, so the
+  layout is rebuilt from the document's text rather than exported. After editing the résumé:
+
+  ```bash
+  python scripts/build_resume_pdf.py "C:/Users/nicks/Downloads/Nicholas_Kimball.docx"
+  ```
+
+  If you'd rather ship Word's own formatting, export a PDF over that same path and ignore the
+  script.
 - Phone number is deliberately not on the site; public numbers attract spam. It's on the résumé.
