@@ -28,24 +28,25 @@ corepack pnpm@latest build
 
 # Two-pass upload so caching is right.
 #
-# Vite fingerprints every JS/CSS filename, so those files can never change
-# behind a given name — cache them for a year. index.html keeps a stable name
-# and points at the fingerprinted files, so it must never be cached, or
-# visitors keep loading the previous build's assets.
+# Vite fingerprints everything under assets/ (index-<hash>.js, .css), so those
+# files can never change behind a given name — cache them for a year. Everything
+# else keeps a stable filename and gets replaced in place: index.html, the résumé
+# PDF, the favicon. Those must never be cached hard, or visitors keep getting the
+# previous version — a year-old résumé, or an index.html pointing at assets that
+# no longer exist.
 
 echo "==> Uploading fingerprinted assets (immutable, 1 year)"
 aws s3 sync dist/ "s3://${S3_BUCKET}" \
   --delete \
-  --exclude "*.html" \
+  --exclude "*" \
+  --include "assets/*" \
   --cache-control "public,max-age=31536000,immutable"
 
-echo "==> Uploading HTML (never cached)"
+echo "==> Uploading stable-name files (revalidate every time)"
 aws s3 sync dist/ "s3://${S3_BUCKET}" \
   --delete \
-  --exclude "*" \
-  --include "*.html" \
-  --cache-control "no-cache,must-revalidate" \
-  --content-type "text/html; charset=utf-8"
+  --exclude "assets/*" \
+  --cache-control "no-cache,must-revalidate"
 
 echo "==> Invalidating CloudFront"
 INVALIDATION_ID=$(aws cloudfront create-invalidation \
