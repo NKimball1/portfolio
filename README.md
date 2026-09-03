@@ -45,16 +45,17 @@ work identically.
 ## Deploying to AWS
 
 The build output is plain static files, so this is S3 + CloudFront — no server, no runtime.
-Cost lands around $1.50/month: mostly the Route 53 hosted zone, plus about $14/year for the
-domain. Traffic at portfolio volume is inside the free tier.
+The domain and DNS live at Cloudflare (Route 53 refuses domain registration on AWS accounts
+without enough billing history). Cost is about $10/year for the domain and well under $1/month
+on AWS at portfolio traffic.
 
 ### One-time setup
 
 Do these in order — later steps depend on IDs the earlier ones produce.
 
-**1. Register the domain.** Route 53 console → *Registered domains* → *Register domains*. Buy it
-here rather than via the CLI so you see the price and confirm the charge yourself. Registration
-takes a few minutes to an hour, and it creates the hosted zone for you.
+**1. Register the domain at Cloudflare.** Cloudflare dashboard → *Domain Registration* →
+*Register Domains*. Sold at cost, WHOIS privacy included. The domain lands in your account with
+Cloudflare DNS already active — there is no Route 53 hosted zone in this setup.
 
 **2. Create an IAM user for deploys.** IAM console → *Users* → create one (e.g. `portfolio-deploy`)
 with programmatic access. Attach `AmazonS3FullAccess` and `CloudFrontFullAccess` — tighten later if
@@ -75,8 +76,9 @@ aws s3api create-bucket --bucket YOUR_BUCKET --region us-east-1
 
 **5. Request the certificate — in us-east-1.** CloudFront only reads certificates from that
 region, no matter where everything else lives. In ACM, request a public cert covering both
-`yourdomain.com` and `www.yourdomain.com`, choose DNS validation, and click *Create records in
-Route 53*. Validation takes a few minutes.
+`yourdomain.com` and `www.yourdomain.com` with DNS validation. ACM shows a CNAME name and value
+for each — add those in Cloudflare DNS, **proxy status off (grey cloud)**. Validation takes a
+few minutes once the records are in.
 
 **6. Create the CloudFront distribution.** Origin = your S3 bucket, with *Origin access control*
 enabled (create one, then use the button ACM offers to copy the generated bucket policy back to
@@ -89,8 +91,18 @@ S3 — that policy is what lets CloudFront read a private bucket). Then set:
 
 The distribution takes 5–15 minutes to deploy.
 
-**7. Point DNS at it.** Route 53 → your hosted zone → create an **A record**, toggle *Alias* on,
-and target the CloudFront distribution. Repeat for `www`.
+**7. Point DNS at it.** In Cloudflare DNS, add two CNAME records targeting the distribution's
+domain (`dXXXXXXXXXX.cloudfront.net`):
+
+| Name  | Target                       | Proxy status          |
+|-------|------------------------------|-----------------------|
+| `@`   | `dXXXXXXXXXX.cloudfront.net` | DNS only (grey cloud) |
+| `www` | `dXXXXXXXXXX.cloudfront.net` | DNS only (grey cloud) |
+
+Cloudflare flattens the apex CNAME automatically, which is why `@` works here. **Keep the proxy
+off.** Orange cloud puts Cloudflare's CDN in front of CloudFront: two caches, so `deploy.sh`'s
+invalidation clears one and the other keeps serving the old build — plus redirect loops unless
+SSL mode is exactly Full (strict). Grey cloud means CloudFront alone handles the site.
 
 **8. Fill in your config.**
 
