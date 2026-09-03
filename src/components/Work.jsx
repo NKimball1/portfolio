@@ -67,16 +67,17 @@ function WorkItem({ item, index }) {
               {open ? '— Less' : '+ How it worked'}
             </button>
 
-            {item.href && (
+            {(item.links ?? []).map((link) => (
               <a
-                href={item.href}
+                key={link.href}
+                href={link.href}
                 target="_blank"
                 rel="noreferrer"
                 className="link-underline font-mono text-xs tracking-[0.12em] text-accent uppercase"
               >
-                {item.linkLabel ?? 'View'} ↗
+                {link.label} ↗
               </a>
-            )}
+            ))}
           </div>
 
           <ul className="mt-7 flex flex-wrap gap-2">

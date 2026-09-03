@@ -17,7 +17,8 @@ src/
     Section.jsx        shared section chrome (eyebrow, rule, max width)
     Reveal.jsx         IntersectionObserver fade-in wrapper
   index.css            design tokens (@theme), base styles, motion
-public/                favicon, résumé PDF
+public/                favicon, résumé PDF, playlists-evals.html (standalone eval report,
+                       copied from the better-ai-playlists repo's docs/)
 ```
 
 Copy lives in one file on purpose: changing what the site *says* never means touching a component.

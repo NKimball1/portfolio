@@ -42,8 +42,31 @@ export const work = [
       'AWS',
       'SQLite',
     ],
-    href: 'https://github.com/NKimball1/cycling-agentic-flow',
-    linkLabel: 'View on GitHub',
+    links: [{ label: 'View on GitHub', href: 'https://github.com/NKimball1/cycling-agentic-flow' }],
+    featured: true,
+  },
+  {
+    title: 'Better AI Playlists',
+    org: 'Personal',
+    year: '2026',
+    kind: 'Open source',
+    summary:
+      'A natural-language playlist agent for Spotify that actually honors hard constraints — built because Spotify’s own AI playlist can’t handle “only songs I’ve already liked.” Generator/validator design: 99% constraint pass rate against a 57.6% naive baseline, measured on golden prompts.',
+    detail:
+      'The thesis is separating constraints from taste. One structured-output call compiles the prompt into a typed spec with two halves: hard constraints (source mode, counts, durations, year ranges, artist caps) enforced by code, and soft intent (vibe, energy arc) that the model is judged on but never trusted to enforce. Tool gating is policy, not prompt — in liked-only mode the Spotify search tool isn’t in the tool list at all, so the model can’t be talked into it. The agent can’t ship a playlist directly either: finalize runs a deterministic validator, and violations come back as structured repair instructions until the result is clean or the budget is exhausted. That validator is what makes model choice a cost knob instead of a correctness risk — Haiku at about five cents a run takes more repair rounds than Opus, not worse results. Spotify had also removed its recommendation and audio-feature endpoints, so retrieval is rebuilt from scratch: the library in SQLite with full-text search, genres reconstructed from MusicBrainz artist tags, hard filters pushed into SQL. The eval layer caught real problems, including a judge that agreed with my own blind preferences only 4 times in 10 and turned out to be popularity-biased — so it was demoted from scorer to context.',
+    tags: [
+      'Python',
+      'Structured output',
+      'Tool gating',
+      'Deterministic validation',
+      'Evals & LLM-as-judge',
+      'SQLite / FTS5',
+      'Model routing',
+    ],
+    links: [
+      { label: 'View on GitHub', href: 'https://github.com/NKimball1/better-ai-playlists' },
+      { label: 'Eval report', href: '/playlists-evals.html' },
+    ],
     featured: true,
   },
   {
@@ -162,7 +185,7 @@ export const skills = [
 export const about = [
   'I’m a customer-facing engineer. The work starts in a room with people describing a problem in their own words, and ends with something running in their environment that I’m still on the hook for months later.',
   'In practice I wear whatever role the engagement needs — development, architecture, DevOps, support, training. The judgment call I make most often isn’t how to build something, but whether to configure, automate, build, or simplify the requirement out of existence.',
-  'The same instinct shows up in how I use LLMs. I build and deploy them myself rather than talking about them abstractly, and most of what I’ve learned is about restraint: keep deterministic work in ordinary code, give the model a tool only when one genuinely earns its place, and measure prompt changes instead of trusting how they feel.',
+  'The same instinct shows up in how I use LLMs. I build and deploy them myself rather than talking about them abstractly, and most of what I’ve learned is about restraint: keep deterministic work in ordinary code, let a validator rather than the model decide when the output is correct, give the model a tool only when one genuinely earns its place, and measure prompt changes instead of trusting how they feel.',
 ]
 
 export const navLinks = [
