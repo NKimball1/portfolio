@@ -5,7 +5,7 @@
 
 export const profile = {
   name: 'Nicholas Kimball',
-  role: 'Forward Deployed Engineer',
+  role: 'Software Engineer · Integrations & AI Systems',
   location: 'Madison, WI',
   availability: 'Open to remote & relocation',
   email: 'nickkimball12@gmail.com',
@@ -170,6 +170,18 @@ export const skills = [
       'Data pipelines',
       'System design',
       'Production support',
+    ],
+  },
+  {
+    group: 'Quality & Testing',
+    items: [
+      'Regression automation',
+      'Java / Cucumber',
+      'Golden-set evals',
+      'LLM-as-judge calibration',
+      'Deterministic validators',
+      'Release verification',
+      'Root cause from source',
     ],
   },
   {

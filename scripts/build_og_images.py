@@ -64,7 +64,7 @@ def site_card():
     d.text((MARGIN - 8, 150), "Nicholas", font=light, fill=TEXT)
     d.text((MARGIN - 8, 290), "Kimball", font=light, fill=MUTED)
 
-    draw_mono_label(d, (MARGIN, 484), "Forward Deployed Engineer", ACCENT)
+    draw_mono_label(d, (MARGIN, 484), "Software Engineer  ·  Integrations & AI Systems", ACCENT)
 
     body = font("segoeui.ttf", 26)
     d.text(
@@ -108,7 +108,7 @@ def playlists_card():
         d.text((MARGIN, y), line, font=sub, fill=MUTED)
         y += 38
 
-    draw_mono_label(d, (MARGIN, 540), "Nicholas Kimball  ·  Forward Deployed Engineer", FAINT)
+    draw_mono_label(d, (MARGIN, 540), "Nicholas Kimball  ·  Software Engineer", FAINT)
     draw_mono_label(d, (W - MARGIN - 300, 580), "nicholaskimball.com", FAINT)
     return img
 
