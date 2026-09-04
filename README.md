@@ -17,8 +17,9 @@ src/
     Section.jsx        shared section chrome (eyebrow, rule, max width)
     Reveal.jsx         IntersectionObserver fade-in wrapper
   index.css            design tokens (@theme), base styles, motion
-public/                favicon, résumé PDF, playlists-evals.html (standalone eval report,
-                       copied from the better-ai-playlists repo's docs/)
+public/                favicon, résumé PDF, 404.html, robots.txt, sitemap.xml, OG images,
+                       playlists-evals.html (standalone eval report, copied from the
+                       better-ai-playlists repo's docs/)
 ```
 
 Copy lives in one file on purpose: changing what the site *says* never means touching a component.
@@ -112,6 +113,16 @@ cp deploy.config.example deploy.config
 ```
 
 Put your bucket name, distribution ID, and domain in it. It's git-ignored.
+
+**9. Distribution extras** (already applied; listed so they survive a rebuild):
+
+- *Custom error responses*: 403 and 404 → `/404.html` with response code 404. S3 behind an OAC
+  answers 403 for missing keys, so without this a typo'd URL shows raw `AccessDenied` XML.
+- *Response headers policy*: the AWS-managed `SecurityHeadersPolicy` (HSTS, nosniff,
+  X-Frame-Options, Referrer-Policy). No CSP — the page uses inline styles for the hero bloom and
+  reveal delays, so a CSP would need `unsafe-inline` and buy little on a static site.
+- *Viewer-request CloudFront Function* `www-to-apex`: 301s `www.` to the apex so there's one
+  canonical URL. Source is in the CloudFront console; it's ten lines.
 
 ### Every deploy after that
 

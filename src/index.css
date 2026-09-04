@@ -11,7 +11,8 @@
   --color-line: #232329;
   --color-text: #ededee;
   --color-muted: #8b8b93;
-  --color-faint: #5a5a62;
+  /* 4.6:1 on --color-ink. The earlier #5a5a62 sat at 2.9:1 and failed WCAG AA. */
+  --color-faint: #77777f;
   --color-accent: #e5a54b;
   --color-accent-dim: #6b4f22;
 

@@ -46,7 +46,18 @@ echo "==> Uploading stable-name files (revalidate every time)"
 aws s3 sync dist/ "s3://${S3_BUCKET}" \
   --delete \
   --exclude "assets/*" \
+  --exclude "*.html" \
   --cache-control "no-cache,must-revalidate"
+
+# HTML separately so the Content-Type carries an explicit charset; s3 sync's
+# guess is bare text/html, and the pages contain non-ASCII punctuation.
+echo "==> Uploading HTML (revalidate every time, utf-8)"
+aws s3 sync dist/ "s3://${S3_BUCKET}" \
+  --delete \
+  --exclude "*" \
+  --include "*.html" \
+  --cache-control "no-cache,must-revalidate" \
+  --content-type "text/html; charset=utf-8"
 
 echo "==> Invalidating CloudFront"
 INVALIDATION_ID=$(aws cloudfront create-invalidation \
