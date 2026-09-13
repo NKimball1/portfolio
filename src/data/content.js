@@ -104,7 +104,7 @@ export const work = [
     title: 'AeroModel',
     org: 'Personal',
     year: '2026',
-    kind: 'Open source',
+    kind: 'Live demo · Open source',
     summary:
       'An interactive 3D wind tunnel showing how position, kit, and equipment change a cyclist’s watts and speed. Physics validated against published wind-tunnel and power-meter data.',
     detail:
@@ -116,7 +116,10 @@ export const work = [
       'Three.js',
       'Vite',
     ],
-    links: [{ label: 'View on GitHub', href: 'https://github.com/NKimball1/aeromodel' }],
+    links: [
+      { label: 'Open the wind tunnel', href: 'https://aero.nicholaskimball.com' },
+      { label: 'View on GitHub', href: 'https://github.com/NKimball1/aeromodel' },
+    ],
   },
   {
     title: 'Nationwide Distribution Rollout',
