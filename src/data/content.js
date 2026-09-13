@@ -70,6 +70,26 @@ export const work = [
     featured: true,
   },
   {
+    title: 'Route Gen AI',
+    org: 'Personal',
+    year: '2026',
+    kind: 'Open source',
+    summary:
+      'Describe a bike ride in plain English — “a 40-mile loop from home with under 1,500 ft of climbing, and don’t put me on Verona Road” — and get back ranked, Garmin-ready GPX routes on a map. Then edit them conversationally: avoid a road, add a stop, make it ten miles longer.',
+    detail:
+      'The design decision that matters: the LLM only translates intent and never touches geometry. One cheap structured-output call per request — about $0.002, enum-locked modes, no tools, no agentic loop — yields schema-valid JSON, and everything after that is deterministic code: generation, validation, ranking, editing. Results are reproducible and testable offline, and a hostile prompt can only produce weird-but-valid values that get clamped server-side. The pipeline is generator → validator: synthesize many candidate loops across compass bearings on a self-hosted BRouter with a custom quiet-roads profile, then reject on hard computed criteria — distance tolerance, climb caps, doubled-back mileage, meters on major highways. Edits are verified rather than claimed: a green/amber/red banner reports the measured outcome, like meters remaining on the road you asked to avoid. It was built by riding the routes. Every real-ride complaint became a regression test before the fix shipped — a hidden 11.9-mile retrace, an “avoid” that circled the wrong kilometer of road, a false “Done” on a failed edit. 88 offline tests, a 16-phrase parse-regression corpus, and a written prompt-injection threat model. Runs locally today as a web app and CLI.',
+    tags: [
+      'Python',
+      'FastAPI',
+      'Structured output',
+      'Generator / validator',
+      'BRouter · OSM · Overpass',
+      'Strava API',
+      'pytest',
+    ],
+    links: [{ label: 'View on GitHub', href: 'https://github.com/NKimball1/route-gen-ai' }],
+  },
+  {
     title: 'Real-Time Multi-Carrier Rating Integration',
     org: 'ProShip',
     year: '2024 — 2026',
@@ -79,6 +99,24 @@ export const work = [
     detail:
       'The hard part was never the carrier APIs — it was holding the latency budget when any single carrier could be slow or down. Multi-server, multi-threaded fan-out with per-carrier timeouts and graceful degradation, so one bad upstream never holds the whole response hostage.',
     tags: ['System design', 'Concurrency', 'REST/SOAP', 'Performance'],
+  },
+  {
+    title: 'AeroModel',
+    org: 'Personal',
+    year: '2026',
+    kind: 'Open source',
+    summary:
+      'An interactive 3D wind tunnel showing how position, kit, and equipment change a cyclist’s watts and speed. Physics validated against published wind-tunnel and power-meter data.',
+    detail:
+      'A pedaling rider sits in animated airflow while a control panel changes everything that affects drag — position, clothing, helmet, frame, wheel depth, tire width, environment. A readout gives the watts a speed costs or the speed a power buys, with a breakdown of where the power goes; pin a baseline, change gear, and it reports the difference in watts, km/h, and time over 40 km. Every drag source sheds its own turbulence plume sized by what it costs, so swapping a road helmet for an aero one visibly cleans the air behind the head — and the rider’s shoulders and legs dominate, because the rider is most of the drag. Underneath is the standard cycling power equation, kept as pure, tested functions separate from the graphics: the model reproduces a published road study’s power-meter measurements to within 6 W, and its position constants are tested against wind-tunnel data from ten studies, all cited in the app. I built it by directing Claude Code — setting the scope and order of work, insisting on physics before visuals and on validation against real data before trusting a number, and catching where the model was wrong, like plumes that showed no difference between helmets. Vite, TypeScript, and Three.js; no backend, no model files, no chart library.',
+    tags: [
+      'Physics model',
+      'Validated vs. published data',
+      'Built by directing Claude Code',
+      'Three.js',
+      'Vite',
+    ],
+    links: [{ label: 'View on GitHub', href: 'https://github.com/NKimball1/aeromodel' }],
   },
   {
     title: 'Nationwide Distribution Rollout',
