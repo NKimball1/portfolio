@@ -142,7 +142,7 @@ assets after a deploy.
   layout is rebuilt from the document's text rather than exported. After editing the résumé:
 
   ```bash
-  python scripts/build_resume_pdf.py "C:/Users/nicks/Downloads/Nicholas_Kimball.docx"
+  python scripts/build_resume_pdf.py "C:/Users/nicks/Downloads/Nicholas_Kimball_Resume_Integration.docx"
   ```
 
   If you'd rather ship Word's own formatting, export a PDF over that same path and ignore the

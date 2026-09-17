@@ -23,6 +23,15 @@ source deploy.config
 : "${S3_BUCKET:?set S3_BUCKET in deploy.config}"
 : "${CLOUDFRONT_DISTRIBUTION_ID:?set CLOUDFRONT_DISTRIBUTION_ID in deploy.config}"
 
+# Only main ships. Experiments live on branches in this same working tree, and
+# this script deploys whatever is checked out, so refuse anything else.
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$BRANCH" != "main" && "${ALLOW_BRANCH_DEPLOY:-}" != "1" ]]; then
+  echo "error: on branch '$BRANCH'. Deploys run from main only." >&2
+  echo "  (set ALLOW_BRANCH_DEPLOY=1 to override deliberately)" >&2
+  exit 1
+fi
+
 echo "==> Building"
 corepack pnpm@latest build
 

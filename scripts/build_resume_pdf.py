@@ -31,7 +31,7 @@ from reportlab.platypus import (
 )
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_DOCX = Path.home() / "Downloads" / "Nicholas_Kimball.docx"
+DEFAULT_DOCX = Path.home() / "Downloads" / "Nicholas_Kimball_Resume_Integration.docx"
 OUT = ROOT / "public" / "Nicholas-Kimball-Resume.pdf"
 
 INK = HexColor("#111114")
